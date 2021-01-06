@@ -35,12 +35,13 @@ module.exports = {
         loaders: [
             {
                 test: /.js$/,
-                loader: 'babel',
-                exclude: /node_modules/,
-                query: {
-                    cacheDirectory: true,
-                    presets: ['es2015', 'react']
-                }
+                loaders: ['react-hot','babel?' + JSON.stringify(
+                    {
+                        cacheDirectory: true,
+                        //es6코드로 변환 하고 react코드도 변환
+                        presets: ['es2015', 'react']
+                    })],
+                exclude: /node_modules/
             }
         ]
     },
