@@ -1,11 +1,13 @@
 import React from 'react';
 import ContactInfo from './ContactInfo';
+import ContactDetails from './ContactDetails';
 
 export default class Contact extends React.Component {
     
     constructor(props) {
         super(props);
         this.state = {
+            selectedKey: -1,
             keyword: '',
             contactData: [{
                 name: 'Abet',
@@ -23,12 +25,20 @@ export default class Contact extends React.Component {
         };
         
         this.handleChange = this.handleChange.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
     handleChange(e) {
         this.setState({
             keyword: e.target.value
         });
+    }
+    handleClick(key) {
+        this.setState({
+            selectedKey: key
+        });
+
+        console.log(key, 'is selected');
     }
     
     render() {
@@ -40,8 +50,14 @@ export default class Contact extends React.Component {
                     return contact.name.toLowerCase().indexOf(this.state.keyword.toLowerCase()) > -1;
                 }
             );
+            //컴포넌트에는 onClick이 적용이 안됨. div, button같은 것만 적용됨
+            //props로 전달이 되기 때문
             return data.map((contact, i) => {
-                return (<ContactInfo contact={contact} key={i}/>);
+                return (<ContactInfo
+                    contact={contact}
+                    key={i}
+                    onClick={()=>this.handleClick(i)}
+                    />);
             });
         };
         
@@ -55,6 +71,14 @@ export default class Contact extends React.Component {
                     onChange={this.handleChange}
                 />
                 <div>{mapToComponents(this.state.contactData)}</div>
+
+                {/* 사용자를 클릭 했을 때, 그 사용자를 아래 ContactDetails에 표시 */}
+                <ContactDetails
+                    isSelected={this.state.selectedKey != -1}
+                    
+                    //contactData의 배열에 selecteKey 
+                    contact={this.state.contactData[this.state.selectedKey]}
+                />
             </div>
         );
     }
